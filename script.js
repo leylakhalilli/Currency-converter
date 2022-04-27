@@ -38,7 +38,7 @@ async function getData(e) {
     }
    }
       catch(error){
-                alertify("net err")
+                alert("bad internet")
     }
 }
 
@@ -68,7 +68,7 @@ async function getInfo() {
     rightText.innerHTML = `1 ${data['value-right']} = ${rateRight.toFixed(4)} ${data['value-left']}`
     }
     catch(error){
-        alertify("bad internet")
+        alert("bad internet")
     }
 }
 
