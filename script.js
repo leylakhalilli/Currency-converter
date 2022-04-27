@@ -8,41 +8,41 @@ async function getData(e) {
     const data = getFormData();
     const toValue = document.querySelector('input[name=to]');
     const fromValue = document.querySelector('input[name=from]');
-   try{
-    if (e.target.name !== 'to') {
+    try {
+        if (e.target.name !== 'to') {
 
-        const currencies = await fetch(`https://api.exchangerate.host/latest?base=${data['value-left']}&symbols=${data['value-right']}`).then(response => response.json());
-        const rate = currencies.rates[`${data['value-right']}`];
+            const currencies = await fetch(`https://api.exchangerate.host/latest?base=${data['value-left']}&symbols=${data['value-right']}`).then(response => response.json());
+            const rate = currencies.rates[`${data['value-right']}`];
+            // console.log(rate)
 
+            if (data.from != '' && data.from != '.') {
+                data.to = (data.from * rate).toFixed(2)
+            } else {
+                data.to = '';
+                data.from = ''
+                fromValue.value = ''
+            }
+            toValue.value = data.to;
 
-        if (data.from != '' && data.from != '.') {
-            data.to = (data.from * rate).toFixed(2)
         } else {
-            data.to = '';
-            data.from = ''
-            fromValue.value = ''
+            const currencies = await fetch(`https://api.exchangerate.host/latest?base=${data['value-right']}&symbols=${data['value-left']}`).then(response => response.json());
+            const rate = currencies.rates[`${data['value-left']}`]
+            if (data.to != '' && data.to != '.') {
+                data.from = (data.to * rate).toFixed(2)
+            } else {
+                data.to = ''
+                data.from = '';
+                toValue.value = ''
+            }
+            fromValue.value = data.from;
         }
-        toValue.value = data.to;
-
-    } else {
-        const currencies = await fetch(`https://api.exchangerate.host/latest?base=${data['value-right']}&symbols=${data['value-left']}`).then(response => response.json());
-        const rate = currencies.rates[`${data['value-left']}`]
-        if (data.to != '' && data.to != '.') {
-            data.from = (data.to * rate).toFixed(2)
-        } else {
-            data.to = ''
-            data.from = '';
-            toValue.value = ''
-        }
-        fromValue.value = data.from;
     }
-   }
-      catch(error){
-                alert("bad internet")
+    catch (error) {
+        alert("bad internet")
     }
 }
 
-     
+
 
 function getFormData() {
     const formData = new FormData(form);
@@ -52,36 +52,37 @@ function getFormData() {
 }
 
 
-const CurrencyName = document.querySelectorAll('.valyuta-name')
+const CurrencyName = document.querySelectorAll('.currency-name')
 CurrencyName.forEach(t => t.addEventListener('click', getInfo))
 
 async function getInfo() {
-    try{
-        const data = getFormData();
-    const currenciesLeft = await fetch(`https://api.exchangerate.host/latest?base=${data['value-left']}&symbols=${data['value-right']}`).then(response => response.json());
-    const rateLeft = currenciesLeft.rates[`${data['value-right']}`];
+  try{
+    const data = getFormData();
+    const valyutaaLeft = await fetch(`https://api.exchangerate.host/latest?base=${data['value-left']}&symbols=${data['value-right']}`).then(response => response.json());
+    const rateLeft = valyutaaLeft.rates[`${data['value-right']}`];
     const leftText = document.querySelector('.left-text')
     leftText.innerHTML = `1 ${data['value-left']} = ${rateLeft.toFixed(4)} ${data['value-right']}`
-    const currenciesRight = await fetch(`https://api.exchangerate.host/latest?base=${data['value-right']}&symbols=${data['value-left']}`).then(response => response.json());
-    const rateRight = currenciesRight.rates[`${data['value-left']}`];
+    // console.log(leftText)
+    const valyutaaRight = await fetch(`https://api.exchangerate.host/latest?base=${data['value-right']}&symbols=${data['value-left']}`).then(response => response.json());
+    const rateRight = valyutaaRight.rates[`${data['value-left']}`];
     const rightText = document.querySelector('.right-text')
     rightText.innerHTML = `1 ${data['value-right']} = ${rateRight.toFixed(4)} ${data['value-left']}`
-    }
-    catch(error){
-        alert("bad internet")
-    }
 }
+ catch(error){
+     alert("Bad Internet")
+ }
+  }
 
 
 const numberMask = IMask(
     document.querySelector('input[name=to]'), {
-        mask: Number,
-        radix: '.',
-        mapToRadix: [',']
-    });
+    mask: Number,
+    radix: '.',
+    mapToRadix: [',']
+});
 const numberMaskk = IMask(
     document.querySelector('input[name=from]'), {
-        mask: Number,
-        radix: '.',
-        mapToRadix: [',']
-    });
+    mask: Number,
+    radix: '.',
+    mapToRadix: [',']
+});
